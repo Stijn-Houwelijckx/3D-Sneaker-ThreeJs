@@ -107,7 +107,8 @@ export class SceneManager {
       new ShoeModel(
         this.renderer.domElement,
         scene,
-        "/models/Shoe_compressed/Shoe_compressed.gltf"
+        "/models/Shoe_compressed/Shoe_compressed.gltf",
+        this.camera
       ), // Load and add the shoe model as a scene subject
     ];
   }

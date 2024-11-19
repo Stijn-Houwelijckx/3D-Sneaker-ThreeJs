@@ -6,18 +6,30 @@ export class ShoeModel {
     domElement,
     scene,
     modelPath,
+    camera,
     scale = 10,
     position = { x: -2, y: 0, z: 0 }
   ) {
     this.scene = scene;
     this.modelPath = modelPath;
+    this.camera = camera;
     this.scale = scale;
     this.position = position;
     this.domElement = domElement;
     this.model = null; // This will hold the loaded model
 
+    // Raycasting setup
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector2();
+    this.intersectedObject = null; // Track the intersected object
+    this.highlightMaterial = new THREE.MeshStandardMaterial({
+      color: 0xff0000, // Red color to highlight
+      //   wireframe: true, // Optional: make it wireframe for better highlighting
+    });
+
     this.load(); // Load the model when the class is instantiated
     this.addShoeRotationInteraction(); // Add interaction logic to rotate the shoe
+    this.addRaycastingInteraction(); // Add raycasting for hover interactions
   }
 
   load() {
@@ -29,10 +41,15 @@ export class ShoeModel {
         this.model = gltf.scene; // Get the 3D model from the loaded GLTF data
         this.scene.add(this.model); // Add the model to the scene
 
+        // Iterate over all parts of the model and store the original material
+        this.model.traverse((child) => {
+          if (child.isMesh) {
+            child.userData.originalMaterial = child.material; // Store the original material
+          }
+        });
+
         // Adjust the model orientation
-        // this.model.rotation.x = Math.PI / 2; // Rotate model to face the right direction (adjust as needed)
-        this.model.rotation.y = Math.PI / 2.6; // Reset Y-axis if needed
-        // this.model.rotation.z = Math.PI / 2; // Reset Z-axis if needed
+        this.model.rotation.y = Math.PI / 2.6;
 
         // Apply scale and position
         this.model.scale.set(this.scale, this.scale, this.scale);
@@ -78,7 +95,7 @@ export class ShoeModel {
       };
 
       // Apply rotation velocity based on mouse movement
-      this.rotationVelocity.x = deltaMove.y * 0.0005; // Adjust speed multiplier as needed
+      this.rotationVelocity.x = deltaMove.y * 0.0005;
       this.rotationVelocity.y = deltaMove.x * 0.0005;
 
       previousMousePosition = { x: event.clientX, y: event.clientY };
@@ -107,10 +124,62 @@ export class ShoeModel {
     };
   }
 
-  // Update method to allow for any animations or transformations in the scene
+  // Add raycasting for hover interaction
+  addRaycastingInteraction() {
+    this.domElement.addEventListener("mousemove", (event) => {
+      // Normalize mouse position to [-1, 1]
+      const rect = this.domElement.getBoundingClientRect();
+      this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      // Update the raycaster
+      this.update();
+    });
+  }
+
+  // Update method to check for hover interactions and update the model
   update(time) {
     if (this.model && this.shoeRotationUpdate) {
       this.shoeRotationUpdate(time);
     }
+
+    // Perform raycasting
+    if (this.model && this.camera) {
+      // Cast the ray from the camera through the mouse position
+      this.raycaster.setFromCamera(this.mouse, this.camera);
+
+      // Find intersections with the shoe model
+      const intersects = this.raycaster.intersectObject(this.model, true);
+
+      if (intersects.length > 0) {
+        const intersectedObject = intersects[0].object;
+
+        // Highlight the intersected part
+        if (this.intersectedObject !== intersectedObject) {
+          if (this.intersectedObject) {
+            this.removeHighlight(this.intersectedObject);
+          }
+
+          this.intersectedObject = intersectedObject;
+          this.addHighlight(this.intersectedObject);
+        }
+      } else {
+        // Remove highlight if no object is intersected
+        if (this.intersectedObject) {
+          this.removeHighlight(this.intersectedObject);
+          this.intersectedObject = null;
+        }
+      }
+    }
+  }
+
+  // Add highlight material to the object
+  addHighlight(object) {
+    object.material = this.highlightMaterial;
+  }
+
+  // Remove highlight material and restore original
+  removeHighlight(object) {
+    object.material = object.userData.originalMaterial || object.material;
   }
 }
