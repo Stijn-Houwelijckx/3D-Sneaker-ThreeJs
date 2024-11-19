@@ -1,0 +1,18 @@
+/* Reset some common properties */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%; /* Ensures the body and html take up the full height */
+  overflow: hidden; /* Prevent scrollbars */
+}
+
+canvas {
+  display: block; /* Prevent canvas from having space below it */
+  width: 100%; /* Make canvas fill the full width */
+  height: 100%; /* Make canvas fill the full height */
+}
