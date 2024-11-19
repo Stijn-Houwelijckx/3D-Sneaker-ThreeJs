@@ -9,10 +9,104 @@ body,
 html {
   height: 100%; /* Ensures the body and html take up the full height */
   overflow: hidden; /* Prevent scrollbars */
+  position: relative;
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 canvas {
   display: block; /* Prevent canvas from having space below it */
   width: 100%; /* Make canvas fill the full width */
   height: 100%; /* Make canvas fill the full height */
+}
+
+.title-container {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.title-container h1 {
+  font-size: 3rem;
+  margin-top: 32px;
+  color: white;
+}
+
+.title-container p {
+  font-size: 1.5rem;
+  color: white;
+}
+
+#color-picker-container {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+
+  transform: translateY(-50%);
+
+  padding: 32px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  display: none;
+
+  /* display: flex; */
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 16px;
+
+  overflow: hidden;
+}
+
+input[type="color" i] {
+  /* border-radius: 50%; */
+  inline-size: 200px;
+  block-size: 50px;
+  border: none;
+
+  position: relative;
+
+  cursor: pointer;
+}
+
+input[type="color" i]::after {
+  content: "Pick a color";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+#color-picker-container input {
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 2rem;
+  text-transform: capitalize;
+}
+
+#save-color {
+  padding: 8px 16px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: margin-top 0.3s ease;
+}
+
+.fa-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
 }

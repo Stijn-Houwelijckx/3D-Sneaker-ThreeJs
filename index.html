@@ -3,11 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
   </head>
   <body>
     <canvas id="canvas"></canvas>
+
+    <div class="title-container">
+      <h1>Configure your sneaker</h1>
+      <p>Click on a part you want to modify</p>
+    </div>
+
+    <!-- Color picker container -->
+    <div id="color-picker-container">
+      <i class="fa fa-close" id="close-color-picker"></i>
+      <h2 class="shoe-part">Part</h2>
+      <input
+        type="color"
+        id="color-picker"
+        name="color-picker"
+        value="#0000ff"
+      />
+      <button id="save-color">Save Color</button>
+    </div>
+
     <script type="module" src="src/main.js"></script>
   </body>
 </html>

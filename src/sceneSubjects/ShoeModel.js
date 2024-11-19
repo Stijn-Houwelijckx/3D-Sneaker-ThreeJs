@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { gsap } from "gsap"; // Import GSAP for animations
 
 export class ShoeModel {
   constructor(
@@ -22,14 +23,18 @@ export class ShoeModel {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
     this.intersectedObject = null; // Track the intersected object
+    this.selectedPart = null; // Track the selected part for coloring
+
     this.highlightMaterial = new THREE.MeshStandardMaterial({
       color: 0xff0000, // Red color to highlight
-      //   wireframe: true, // Optional: make it wireframe for better highlighting
+      wireframe: true, // Optional: make it wireframe for better highlighting
     });
 
     this.load(); // Load the model when the class is instantiated
     this.addShoeRotationInteraction(); // Add interaction logic to rotate the shoe
     this.addRaycastingInteraction(); // Add raycasting for hover interactions
+
+    this.setupColorPicker(); // Setup the color picker and save button
   }
 
   load() {
@@ -45,6 +50,11 @@ export class ShoeModel {
         this.model.traverse((child) => {
           if (child.isMesh) {
             child.userData.originalMaterial = child.material; // Store the original material
+
+            // Assign a default name if not present
+            if (!child.name) {
+              child.name = "Unnamed Part"; // You can set more descriptive names if known
+            }
           }
         });
 
@@ -135,6 +145,14 @@ export class ShoeModel {
       // Update the raycaster
       this.update();
     });
+
+    // Click event to select part and show color picker
+    this.domElement.addEventListener("click", (event) => {
+      if (this.intersectedObject) {
+        this.selectedPart = this.intersectedObject;
+        this.showColorPicker();
+      }
+    });
   }
 
   // Update method to check for hover interactions and update the model
@@ -171,6 +189,79 @@ export class ShoeModel {
         }
       }
     }
+  }
+
+  // Show the color picker with the name of the selected part
+  showColorPicker() {
+    const colorPickerContainer = document.getElementById(
+      "color-picker-container"
+    );
+    const partNameElement = colorPickerContainer.querySelector(".shoe-part");
+
+    // Update the part name dynamically
+    if (this.selectedPart && this.selectedPart.name) {
+      partNameElement.textContent = this.selectedPart.name; // Set the name of the selected part
+    } else {
+      partNameElement.textContent = "Unknown Part"; // Fallback if no name is set
+    }
+
+    // Use GSAP to animate the container's width and height
+    gsap.to(colorPickerContainer, {
+      duration: 0.5, // Animation duration in seconds
+      width: "33.33%", // Set the width to 33.33%
+      height: "50%", // Set the height to 50%
+      ease: "power2.out", // Easing function for smooth animation
+    });
+
+    // Finally, make the container visible after the animation starts
+    colorPickerContainer.style.display = "flex"; // Show the container
+  }
+
+  // Apply the selected color to the part
+  applyColorToSelectedPart(color) {
+    if (this.selectedPart) {
+      this.selectedPart.material = new THREE.MeshStandardMaterial({
+        color: color,
+      });
+      this.selectedPart.userData.originalMaterial = this.selectedPart.material;
+    }
+  }
+
+  // Set up the color picker and save button
+  setupColorPicker() {
+    const colorPicker = document.getElementById("color-picker");
+    const saveColorButton = document.getElementById("save-color");
+    const closeButton = document.querySelector(".fa-close"); // Select the close button
+
+    saveColorButton.addEventListener("click", () => {
+      const selectedColor = colorPicker.value;
+      this.applyColorToSelectedPart(selectedColor);
+      this.hideColorPicker();
+    });
+
+    // Event listener for the close button
+    closeButton.addEventListener("click", () => {
+      this.hideColorPicker();
+    });
+  }
+
+  // Hide the color picker with a closing animation
+  hideColorPicker() {
+    const colorPickerContainer = document.getElementById(
+      "color-picker-container"
+    );
+
+    // Animate the container's width and height to 0 to close it
+    gsap.to(colorPickerContainer, {
+      duration: 0.5, // Animation duration in seconds
+      width: "0%", // Set the width to 0% to collapse it
+      height: "0%", // Set the height to 0% to collapse it
+      ease: "power2.in", // Easing function for smooth closing
+      onComplete: () => {
+        // After the animation is complete, hide the container
+        colorPickerContainer.style.display = "none"; // Hide the container
+      },
+    });
   }
 
   // Add highlight material to the object

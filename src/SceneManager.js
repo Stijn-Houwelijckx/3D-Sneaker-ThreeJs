@@ -54,8 +54,8 @@ export class SceneManager {
     this.camera.position.set(0, 1.8, 3); // Adjust this as needed
 
     // Set up the GUI for controls
-    this.gui = new dat.GUI();
-    this.createGUI(); // Create the GUI with controls
+    // this.gui = new dat.GUI();
+    // this.createGUI(); // Create the GUI with controls
   }
 
   // Builds the 3D scene
