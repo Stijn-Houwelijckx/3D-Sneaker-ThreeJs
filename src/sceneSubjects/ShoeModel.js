@@ -20,7 +20,8 @@ export class ShoeModel {
 
     // Raycasting setup
     this.raycaster = new THREE.Raycaster();
-    this.mouse = new THREE.Vector2();
+    // this.mouse = new THREE.Vector2();
+    this.pointer = new THREE.Vector2();
     this.intersectedObject = null; // Track the intersected object
     this.highlightMaterial = new THREE.MeshStandardMaterial({
       color: 0xff0000, // Red color to highlight
@@ -126,14 +127,43 @@ export class ShoeModel {
 
   // Add raycasting for hover interaction
   addRaycastingInteraction() {
-    this.domElement.addEventListener("mousemove", (event) => {
-      // Normalize mouse position to [-1, 1]
+    // Update raycasting on pointer move
+    window.addEventListener("pointermove", (event) => {
+      // Normalize pointer position to [-1, 1]
       const rect = this.domElement.getBoundingClientRect();
-      this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+      this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-      // Update the raycaster
-      this.update();
+      // Update the raycaster with the pointer position
+      this.raycaster.setFromCamera(this.pointer, this.camera);
+
+      // Calculate which objects intersect the ray
+      const intersects = this.raycaster.intersectObjects(this.scene.children);
+
+      // Loop through the intersected objects and change their material color
+      for (let i = 0; i < intersects.length; i++) {
+        intersects[i].object.material.color.set(0xff0000); // Change to red
+      }
+    });
+
+    // Render loop to update the scene and camera
+    const render = () => {
+      // Render the scene with the camera
+      this.renderer.render(this.scene, this.camera);
+
+      // Request the next frame
+      window.requestAnimationFrame(render);
+    };
+
+    // Call the render loop once
+    render();
+
+    // Enable layers if needed (optional, you can manage layers in your scene)
+    this.raycaster.layers.set(1); // Set raycaster layer to 1 (this layer will be checked)
+    this.scene.traverse((object) => {
+      if (object.isMesh) {
+        object.layers.enable(1); // Enable layer 1 for each object
+      }
     });
   }
 
@@ -142,44 +172,5 @@ export class ShoeModel {
     if (this.model && this.shoeRotationUpdate) {
       this.shoeRotationUpdate(time);
     }
-
-    // Perform raycasting
-    if (this.model && this.camera) {
-      // Cast the ray from the camera through the mouse position
-      this.raycaster.setFromCamera(this.mouse, this.camera);
-
-      // Find intersections with the shoe model
-      const intersects = this.raycaster.intersectObject(this.model, true);
-
-      if (intersects.length > 0) {
-        const intersectedObject = intersects[0].object;
-
-        // Highlight the intersected part
-        if (this.intersectedObject !== intersectedObject) {
-          if (this.intersectedObject) {
-            this.removeHighlight(this.intersectedObject);
-          }
-
-          this.intersectedObject = intersectedObject;
-          this.addHighlight(this.intersectedObject);
-        }
-      } else {
-        // Remove highlight if no object is intersected
-        if (this.intersectedObject) {
-          this.removeHighlight(this.intersectedObject);
-          this.intersectedObject = null;
-        }
-      }
-    }
-  }
-
-  // Add highlight material to the object
-  addHighlight(object) {
-    object.material = this.highlightMaterial;
-  }
-
-  // Remove highlight material and restore original
-  removeHighlight(object) {
-    object.material = object.userData.originalMaterial || object.material;
   }
 }
