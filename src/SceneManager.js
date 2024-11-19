@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"; // Import OrbitControls
 import * as dat from "dat.gui"; // Importing dat.GUI for UI controls
 
+import { Atmosphere } from "./sceneSubjects/Atmosphere"; // Importing Atmosphere
 import { GeneralLights } from "./sceneSubjects/GeneralLights"; // Importing GeneralLights
 import { ShoeModel } from "./sceneSubjects/ShoeModel"; // Importing ShoeModel
 
@@ -22,20 +23,35 @@ export class SceneManager {
     this.camera = this.buildCamera(this.screenDimensions);
     this.sceneSubjects = this.createSceneSubjects(this.scene);
 
+    // Create the atmosphere (skybox with environment texture)
+    this.atmosphere = new Atmosphere(this.scene); // Add atmosphere to the scene
+
     // Bind the window resize event
     window.addEventListener("resize", this.onWindowResize.bind(this));
 
     // Add OrbitControls
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableDamping = true; // Smooth movement
-    this.controls.dampingFactor = 0.25; // Damping factor (smooths movement)
-    this.controls.screenSpacePanning = false; // Disable screen space panning if desired
-    this.controls.maxPolarAngle = Math.PI / 2; // Limits vertical rotation (optional)
-    this.controls.target.set(0, 0, 0); // Target the center of the scene
-    this.controls.update(); // Initial update
+    this.controls.enabled = false;
+    // this.controls.enableDamping = true; // Smooth movement
+    // this.controls.dampingFactor = 0.25; // Damping factor for smoothness
+    // this.controls.screenSpacePanning = false; // Disable screen space panning
+    // this.controls.enableZoom = false; // Disable zooming
+    // this.controls.enablePan = false; // Disable panning
+
+    // // Restrict horizontal rotation (azimuth angle)
+    // this.controls.minAzimuthAngle = -Math.PI / 4; // Limit to -45 degrees
+    // this.controls.maxAzimuthAngle = Math.PI / 4; // Limit to +45 degrees
+
+    // // Restrict vertical rotation (polar angle)
+    // this.controls.minPolarAngle = Math.PI / 4; // Limit to +45 degrees above horizon
+    // this.controls.maxPolarAngle = Math.PI / 2; // Limit to +90 degrees (no looking below)
+
+    // this.controls.target.set(0, 0, 0); // Target the center of the scene
+    // this.controls.update(); // Initial update
 
     // Set an initial camera position for better view
-    this.camera.position.set(0, 0, 5); // Adjust this as needed
+
+    this.camera.position.set(0, 1.8, 3); // Adjust this as needed
 
     // Set up the GUI for controls
     this.gui = new dat.GUI();
@@ -61,6 +77,11 @@ export class SceneManager {
     renderer.setSize(width, height); // Set initial size of the renderer
     renderer.gammaInput = true;
     renderer.gammaOutput = true;
+
+    // Apply tone mapping for realistic lighting
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; // Tone mapping algorithm
+    renderer.toneMappingExposure = 0.5; // Exposure level (adjust as needed)
+
     return renderer;
   }
 
@@ -69,7 +90,7 @@ export class SceneManager {
     const aspectRatio = width / height;
     const fieldOfView = 75;
     const nearPlane = 0.01;
-    const farPlane = 100;
+    const farPlane = 1000;
     const camera = new THREE.PerspectiveCamera(
       fieldOfView,
       aspectRatio,
@@ -83,7 +104,11 @@ export class SceneManager {
   createSceneSubjects(scene) {
     return [
       new GeneralLights(scene), // Add lights to the scene
-      new ShoeModel(scene, "/models/Shoe_compressed/Shoe_compressed.gltf"), // Load and add the shoe model as a scene subject
+      new ShoeModel(
+        this.renderer.domElement,
+        scene,
+        "/models/Shoe_compressed/Shoe_compressed.gltf"
+      ), // Load and add the shoe model as a scene subject
     ];
   }
 
@@ -149,8 +174,19 @@ export class SceneManager {
     // Update each scene subject (lights, objects, etc.)
     this.sceneSubjects.forEach((subject) => subject.update(elapsedTime));
 
+    // Update the atmosphere
+    this.atmosphere.update(); // Optional update for animation
+
     // Update the OrbitControls for interaction
     this.controls.update(); // Ensure controls are updated on every frame
+
+    // Update shoe model rotation interaction
+    const shoe = this.sceneSubjects.find(
+      (subject) => subject instanceof ShoeModel
+    );
+    if (shoe) {
+      shoe.update(elapsedTime); // Delegate rotation update to the ShoeModel instance
+    }
 
     // Render the scene with the camera
     this.renderer.render(this.scene, this.camera);
