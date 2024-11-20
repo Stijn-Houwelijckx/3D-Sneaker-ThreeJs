@@ -11,19 +11,6 @@ export class Atmosphere {
       "360images/darkSpace_upscaled.jpeg"
     );
 
-    // Load the environment texture (6 images for the cube sides)
-    this.cubeTextureLoader = new THREE.CubeTextureLoader();
-    this.environmentTexture = this.cubeTextureLoader.load([
-      "/environements/Standard-Cube-Map/px.png", // right
-      "/environements/Standard-Cube-Map/nx.png", // left
-      "/environements/Standard-Cube-Map/ny.png", // bottom
-      "/environements/Standard-Cube-Map/py.png", // top
-      "/environements/Standard-Cube-Map/pz.png", // front
-      "/environements/Standard-Cube-Map/nz.png", // back
-    ]);
-
-    this.environmentTexture.flipY = true;
-
     // Create the box geometry (large cube around the scene)
     this.geometry = new THREE.SphereGeometry(10); // Large cube to cover the scene
 

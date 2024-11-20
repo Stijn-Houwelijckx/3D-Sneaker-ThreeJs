@@ -9,7 +9,7 @@ export class ShoeModel {
     modelPath,
     camera,
     scale = 10,
-    position = { x: -2, y: 0, z: 0 }
+    position = { x: 0, y: 0, z: 0 }
   ) {
     this.scene = scene;
     this.modelPath = modelPath;
@@ -25,9 +25,31 @@ export class ShoeModel {
     this.intersectedObject = null; // Track the intersected object
     this.selectedPart = null; // Track the selected part for coloring
 
+    // Load the environment texture (6 images for the cube sides)
+    this.cubeTextureLoader = new THREE.CubeTextureLoader();
+    this.environmentTexture = this.cubeTextureLoader.load([
+      "/environements/Standard-Cube-Map/px.png", // right
+      "/environements/Standard-Cube-Map/nx.png", // left
+      "/environements/Standard-Cube-Map/ny.png", // bottom
+      "/environements/Standard-Cube-Map/py.png", // top
+      "/environements/Standard-Cube-Map/pz.png", // front
+      "/environements/Standard-Cube-Map/nz.png", // back
+    ]);
+
+    this.environmentTexture.flipY = true;
+
+    // this.highlightMaterial = new THREE.MeshStandardMaterial({
+    //   color: 0xff0000, // Red color to highlight
+    //   wireframe: true, // Optional: make it wireframe for better highlighting
+    // });
+
     this.highlightMaterial = new THREE.MeshStandardMaterial({
-      color: 0xff0000, // Red color to highlight
-      wireframe: true, // Optional: make it wireframe for better highlighting
+      // Add the environment texture to the material
+      envMap: this.environmentTexture, // Set the environment map
+      color: "red", // Red color to highlight
+      //   wireframe: true, // Optional: make it wireframe for better highlighting
+      metalness: 1, // Adjust as needed
+      roughness: 0.0005, // Adjust as needed
     });
 
     this.load(); // Load the model when the class is instantiated
@@ -205,6 +227,15 @@ export class ShoeModel {
       partNameElement.textContent = "Unknown Part"; // Fallback if no name is set
     }
 
+    // First, animate the shoe model to the new position using GSAP
+    gsap.to(this.model.position, {
+      x: -2, // Set the new position for the shoe
+      y: 0, // Keep the same y-position
+      z: 0, // Keep the same z-position
+      duration: 1, // Animation duration in seconds
+      ease: "power2.out", // Easing for smooth movement
+    });
+
     // Use GSAP to animate the container's width and height
     gsap.to(colorPickerContainer, {
       duration: 0.5, // Animation duration in seconds
@@ -261,6 +292,15 @@ export class ShoeModel {
         // After the animation is complete, hide the container
         colorPickerContainer.style.display = "none"; // Hide the container
       },
+    });
+
+    // First, animate the shoe model to the new position using GSAP
+    gsap.to(this.model.position, {
+      x: 0, // Set the new position for the shoe
+      y: 0, // Keep the same y-position
+      z: 0, // Keep the same z-position
+      duration: 1, // Animation duration in seconds
+      ease: "sine", // Easing for smooth movement
     });
   }
 
