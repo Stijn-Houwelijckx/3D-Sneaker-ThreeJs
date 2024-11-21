@@ -6,11 +6,18 @@ export class GeneralLights {
   constructor(scene) {
     // Create an AmbientLight with color and intensity
     this.ambientLight = new THREE.AmbientLight("white", 0.1);
+
     scene.add(this.ambientLight); // Add the light to the
 
     // Create a PointLight with initial color and intensity
     this.light = new THREE.PointLight("white", 100);
     this.light.position.set(0, 5, 0); // Set the position of the light
+
+    // Enable shadow casting for the light
+    this.light.castShadow = true; // Enable shadow casting for the light
+    this.light.shadow.mapSize.width = 4096; // Set shadow map width
+    this.light.shadow.mapSize.height = 4096; // Set shadow map height
+
     // set color and intensity
     this.light.color.set("white");
 

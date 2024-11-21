@@ -12,7 +12,7 @@ export class Atmosphere {
     );
 
     // Create the box geometry (large cube around the scene)
-    this.geometry = new THREE.SphereGeometry(10); // Large cube to cover the scene
+    this.geometry = new THREE.SphereGeometry(10, 1000); // Large cube to cover the scene
 
     // Create a material with the environment texture
     this.material = new THREE.MeshStandardMaterial({
@@ -24,6 +24,8 @@ export class Atmosphere {
 
     // Create the cube mesh and add it to the scene
     this.sphere = new THREE.Mesh(this.geometry, this.material);
+    this.sphere.receiveShadow = true; // Enable shadow reception
+
     this.scene.add(this.sphere); // Add the cube to the scene
   }
 

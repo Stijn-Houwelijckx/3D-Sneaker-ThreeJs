@@ -82,6 +82,9 @@ export class SceneManager {
     renderer.toneMapping = THREE.ACESFilmicToneMapping; // Tone mapping algorithm
     renderer.toneMappingExposure = 0.5; // Exposure level (adjust as needed)
 
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.VSMShadowMap;
+
     return renderer;
   }
 

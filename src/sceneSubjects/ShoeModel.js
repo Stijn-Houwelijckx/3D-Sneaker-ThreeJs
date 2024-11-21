@@ -73,6 +73,9 @@ export class ShoeModel {
           if (child.isMesh) {
             child.userData.originalMaterial = child.material; // Store the original material
 
+            child.castShadow = true; // Enable shadow casting
+            child.receiveShadow = true; // Enable shadow receiving
+
             // Assign a default name if not present
             if (!child.name) {
               child.name = "Unnamed Part"; // You can set more descriptive names if known
