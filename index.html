@@ -19,16 +19,31 @@
     </div>
 
     <!-- Color picker container -->
-    <div id="color-picker-container">
+    <div class="color-picker-container">
       <i class="fa fa-close" id="close-color-picker"></i>
+      <h2 class="">Color:</h2>
       <h2 class="shoe-part">Part</h2>
-      <input
-        type="color"
-        id="color-picker"
-        name="color-picker"
-        value="#0000ff"
-      />
-      <button id="save-color">Save Color</button>
+      <!-- Grid of 9 colors, using data-color with color names -->
+      <div class="color-grid">
+        <!-- Red -->
+        <div class="color" data-color="ff0000"></div>
+        <!-- Blue -->
+        <div class="color" data-color="0000ff"></div>
+        <!-- Green -->
+        <div class="color" data-color="69ff47"></div>
+        <!-- Yellow -->
+        <div class="color" data-color="ffff00"></div>
+        <!-- Purple -->
+        <div class="color" data-color="800080"></div>
+        <!-- Orange -->
+        <div class="color" data-color="ffa500"></div>
+        <!-- Black -->
+        <div class="color" data-color="000000"></div>
+        <!-- White -->
+        <div class="color" data-color="ffffff"></div>
+        <!-- Grey -->
+        <div class="color" data-color="808080"></div>
+      </div>
     </div>
 
     <script type="module" src="src/main.js"></script>

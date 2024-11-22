@@ -14,7 +14,7 @@ export class GeneralLights {
     this.light.position.set(0, 5, 0); // Set the position of the light
 
     // Enable shadow casting for the light
-    this.light.castShadow = true; // Enable shadow casting for the light
+    // this.light.castShadow = true; // Enable shadow casting for the light
     this.light.shadow.mapSize.width = 4096; // Set shadow map width
     this.light.shadow.mapSize.height = 4096; // Set shadow map height
 

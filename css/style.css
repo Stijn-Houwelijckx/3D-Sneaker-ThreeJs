@@ -1,3 +1,10 @@
+@import url(https://db.onlinewebfonts.com/c/f7d1b2995a6dff7abcda304d226aa67d?family=Helvetica+W01+Bold);
+
+:root {
+  --primary-color: #69ff47;
+  --secondary-color: #007bff;
+}
+
 /* Reset some common properties */
 * {
   margin: 0;
@@ -11,7 +18,7 @@ html {
   overflow: hidden; /* Prevent scrollbars */
   position: relative;
 
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Helvetica W01 Bold";
 }
 
 canvas {
@@ -31,7 +38,9 @@ canvas {
 .title-container h1 {
   font-size: 3rem;
   margin-top: 32px;
-  color: white;
+  color: var(--primary-color);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .title-container p {
@@ -39,12 +48,16 @@ canvas {
   color: white;
 }
 
-#color-picker-container {
+.color-picker-container {
   position: absolute;
-  top: 50%;
-  right: 16px;
+  top: 0;
+  right: -25vw;
 
-  transform: translateY(-50%);
+  height: 100vh;
+  width: 25vw;
+  min-width: fit-content;
+
+  /* transform: translateY(-50%); */
 
   padding: 32px;
   background: #fff;
@@ -57,9 +70,57 @@ canvas {
   justify-content: center;
   align-items: center;
 
-  border-radius: 16px;
+  /* border-radius: 16px; */
+  border-top-left-radius: 32px;
+  border-bottom-left-radius: 32px;
 
   overflow: hidden;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.color-grid .color {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  cursor: pointer;
+
+  border: solid 2px #000;
+}
+
+.color-grid .color[data-color="ff0000"] {
+  background: #ff0000;
+}
+.color-grid .color[data-color="0000ff"] {
+  background: #0000ff;
+}
+.color-grid .color[data-color="69ff47"] {
+  background: #69ff47;
+}
+.color-grid .color[data-color="ffff00"] {
+  background: #ffff00;
+}
+.color-grid .color[data-color="800080"] {
+  background: #800080;
+}
+.color-grid .color[data-color="ffa500"] {
+  background: #ffa500;
+}
+.color-grid .color[data-color="000000"] {
+  background: #000000;
+}
+.color-grid .color[data-color="ffffff"] {
+  background: #ffffff;
+}
+.color-grid .color[data-color="808080"] {
+  background: #808080;
 }
 
 input[type="color" i] {

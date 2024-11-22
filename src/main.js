@@ -20,42 +20,42 @@ function render() {
 render();
 
 // Select the color picker and save button elements
-const colorPicker = document.getElementById("color-picker");
+// const colorPicker = document.getElementById("color-picker");
 const saveColorButton = document.getElementById("save-color");
 
 let programmaticClick = false; // Flag to track programmatic clicks
 
-// Add an event listener to the color picker
-colorPicker.addEventListener("click", (event) => {
-  if (programmaticClick) {
-    // Reset the flag and allow the default color picker behavior
-    programmaticClick = false;
-    return;
-  }
+// // Add an event listener to the color picker
+// colorPicker.addEventListener("click", (event) => {
+//   if (programmaticClick) {
+//     // Reset the flag and allow the default color picker behavior
+//     programmaticClick = false;
+//     return;
+//   }
 
-  // Prevent the default behavior of opening the color picker
-  event.preventDefault();
+//   // Prevent the default behavior of opening the color picker
+//   event.preventDefault();
 
-  // Animate the margin-top of the save button using GSAP
-  gsap.to(saveColorButton, {
-    duration: 0.5, // Animation duration in seconds
-    marginTop: "250px", // Target margin-top value
-    ease: "power2.out", // Easing function for smooth motion
-    onComplete: () => {
-      // Add a small delay before triggering the color picker
-      setTimeout(() => {
-        programmaticClick = true; // Set flag to avoid loop
-        colorPicker.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-      }, 200); // Add a 200ms delay before triggering
-    },
-  });
-});
+//   // Animate the margin-top of the save button using GSAP
+//   gsap.to(saveColorButton, {
+//     duration: 0.5, // Animation duration in seconds
+//     marginTop: "250px", // Target margin-top value
+//     ease: "power2.out", // Easing function for smooth motion
+//     onComplete: () => {
+//       // Add a small delay before triggering the color picker
+//       setTimeout(() => {
+//         programmaticClick = true; // Set flag to avoid loop
+//         colorPicker.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+//       }, 200); // Add a 200ms delay before triggering
+//     },
+//   });
+// });
 
-colorPicker.addEventListener("blur", () => {
-  // Reset the margin-top of the save button
-  gsap.to(saveColorButton, {
-    duration: 0.5, // Animation duration in seconds
-    marginTop: "0px", // Reset margin-top value
-    ease: "power2.out",
-  });
-});
+// colorPicker.addEventListener("blur", () => {
+//   // Reset the margin-top of the save button
+//   gsap.to(saveColorButton, {
+//     duration: 0.5, // Animation duration in seconds
+//     marginTop: "0px", // Reset margin-top value
+//     ease: "power2.out",
+//   });
+// });

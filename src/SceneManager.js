@@ -6,6 +6,8 @@ import { Atmosphere } from "./sceneSubjects/Atmosphere"; // Importing Atmosphere
 import { GeneralLights } from "./sceneSubjects/GeneralLights"; // Importing GeneralLights
 import { ShoeModel } from "./sceneSubjects/ShoeModel"; // Importing ShoeModel
 
+import { Config } from "./config/config"; // Importing Config
+
 export class SceneManager {
   constructor(canvas) {
     // Initialize clock
@@ -53,9 +55,11 @@ export class SceneManager {
 
     this.camera.position.set(0, 1.8, 3); // Adjust this as needed
 
-    // Set up the GUI for controls
-    this.gui = new dat.GUI();
-    this.createGUI(); // Create the GUI with controls
+    // Set up the GUI for controls only if enabled in the config
+    if (Config.enableGUI) {
+      this.gui = new dat.GUI();
+      this.createGUI(); // Create the GUI with controls
+    }
   }
 
   // Builds the 3D scene

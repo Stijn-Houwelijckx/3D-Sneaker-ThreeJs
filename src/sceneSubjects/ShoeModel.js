@@ -46,10 +46,10 @@ export class ShoeModel {
     this.highlightMaterial = new THREE.MeshStandardMaterial({
       // Add the environment texture to the material
       envMap: this.environmentTexture, // Set the environment map
-      color: "red", // Red color to highlight
-      //   wireframe: true, // Optional: make it wireframe for better highlighting
+      color: "#6AFF48", // Highlight
+      // wireframe: true, // Optional: make it wireframe for better highlighting
       metalness: 1, // Adjust as needed
-      roughness: 0.0005, // Adjust as needed
+      roughness: 0.3, // Adjust as needed
     });
 
     this.load(); // Load the model when the class is instantiated
@@ -218,8 +218,8 @@ export class ShoeModel {
 
   // Show the color picker with the name of the selected part
   showColorPicker() {
-    const colorPickerContainer = document.getElementById(
-      "color-picker-container"
+    const colorPickerContainer = document.querySelector(
+      ".color-picker-container"
     );
     const partNameElement = colorPickerContainer.querySelector(".shoe-part");
 
@@ -242,8 +242,7 @@ export class ShoeModel {
     // Use GSAP to animate the container's width and height
     gsap.to(colorPickerContainer, {
       duration: 0.5, // Animation duration in seconds
-      width: "33.33%", // Set the width to 33.33%
-      height: "50%", // Set the height to 50%
+      right: "0vw", // Set the width to 33.33%
       ease: "power2.out", // Easing function for smooth animation
     });
 
@@ -263,14 +262,23 @@ export class ShoeModel {
 
   // Set up the color picker and save button
   setupColorPicker() {
-    const colorPicker = document.getElementById("color-picker");
-    const saveColorButton = document.getElementById("save-color");
+    const colorGrid = document.querySelector(".color-grid");
     const closeButton = document.querySelector(".fa-close"); // Select the close button
 
-    saveColorButton.addEventListener("click", () => {
-      const selectedColor = colorPicker.value;
-      this.applyColorToSelectedPart(selectedColor);
-      this.hideColorPicker();
+    // Add event listener for the color grid
+    colorGrid.addEventListener("click", (event) => {
+      const target = event.target;
+
+      console.log(target);
+
+      // Check if the clicked element is a color div
+      if (target.classList.contains("color")) {
+        const selectedColor = target.getAttribute("data-color"); // Get the color from data-color
+
+        console.log(selectedColor);
+        this.applyColorToSelectedPart(`#${selectedColor}`); // Apply color with '#' prefix
+        this.hideColorPicker(); // Optionally hide the color picker
+      }
     });
 
     // Event listener for the close button
@@ -281,15 +289,14 @@ export class ShoeModel {
 
   // Hide the color picker with a closing animation
   hideColorPicker() {
-    const colorPickerContainer = document.getElementById(
-      "color-picker-container"
+    const colorPickerContainer = document.querySelector(
+      ".color-picker-container"
     );
 
     // Animate the container's width and height to 0 to close it
     gsap.to(colorPickerContainer, {
       duration: 0.5, // Animation duration in seconds
-      width: "0%", // Set the width to 0% to collapse it
-      height: "0%", // Set the height to 0% to collapse it
+      right: "-25vw", // Set the width to 0% to collapse it
       ease: "power2.in", // Easing function for smooth closing
       onComplete: () => {
         // After the animation is complete, hide the container
