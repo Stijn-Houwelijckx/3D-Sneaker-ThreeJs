@@ -55,12 +55,14 @@ export class ShoeModel {
 
     this.materials = {
       brown_leather_1k: {
+        name: "Brown Leather",
         diffuse: "/textures/brown_leather_1k/brown_leather_diffuse_1k.jpg",
         ao: "/textures/brown_leather_1k/brown_leather_ao_1k.jpg",
         normal: "/textures/brown_leather_1k/brown_leather_nor_gl_1k.exr",
         roughness: "/textures/brown_leather_1k/brown_leather_rough_1k.exr",
       },
       denim_fabric_1k: {
+        name: "Denim Fabric",
         diffuse: "/textures/denim_fabric_1k/denim_fabric_diffuse_1k.jpg",
         ao: "/textures/denim_fabric_1k/denim_fabric_ao_1k.jpg",
         normal: "/textures/denim_fabric_1k/denim_fabric_nor_gl_1k.exr",
@@ -87,6 +89,11 @@ export class ShoeModel {
         // Iterate over all parts of the model and store the original material
         this.model.traverse((child) => {
           if (child.isMesh) {
+            // Set default material name to "none"
+            if (child.material) {
+              child.material.name = "none"; // Default material name
+            }
+
             child.userData.originalMaterial = child.material; // Store the original material
 
             child.castShadow = true; // Enable shadow casting
@@ -178,6 +185,10 @@ export class ShoeModel {
   // Add raycasting for hover interaction
   addRaycastingInteraction() {
     this.domElement.addEventListener("mousemove", (event) => {
+      if (this.isOrderFinishOpen()) {
+        return; // Skip raycasting when orderFinish is open
+      }
+
       // Normalize mouse position to [-1, 1]
       const rect = this.domElement.getBoundingClientRect();
       this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -189,6 +200,10 @@ export class ShoeModel {
 
     // Click event to select part and show color picker
     this.domElement.addEventListener("click", (event) => {
+      if (this.isOrderFinishOpen()) {
+        return; // Skip raycasting when orderFinish is open
+      }
+
       if (this.intersectedObject) {
         this.selectedPart = this.intersectedObject;
         this.showColorPicker();
@@ -276,7 +291,6 @@ export class ShoeModel {
     }
   }
 
-  // Apply the selected material to the part
   loadMaterial(materialName) {
     if (!this.selectedPart) {
       console.error("No part selected.");
@@ -284,41 +298,40 @@ export class ShoeModel {
     }
 
     if (materialName === "none") {
-      // Create a simple material with no textures
-      this.applyColorToSelectedPart("#ffffff"); // Reset to white color
-
+      // Reset to a default material
+      this.applyColorToSelectedPart("#ffffff");
+      this.selectedPart.material.name = "Plain Material"; // Set a default name
       console.log(
         "Textures removed, material reset to plain MeshStandardMaterial."
       );
       return;
     }
 
-    // Check if the material exists in the configuration
-    if (!this.materials[materialName]) {
+    const materialConfig = this.materials[materialName];
+    if (!materialConfig) {
       console.error("Invalid material name:", materialName);
       return;
     }
 
-    const loader = new THREE.TextureLoader(); // For JPG/PNG textures
-    const exrLoader = new EXRLoader(); // For EXR textures
-
-    const materialConfig = this.materials[materialName];
+    const loader = new THREE.TextureLoader();
+    const exrLoader = new EXRLoader();
 
     const textures = {
-      map: loader.load(materialConfig.diffuse), // Albedo/Base color
-      aoMap: loader.load(materialConfig.ao), // Ambient Occlusion
-      normalMap: exrLoader.load(materialConfig.normal), // Normal map
-      roughnessMap: exrLoader.load(materialConfig.roughness), // Roughness
+      map: loader.load(materialConfig.diffuse),
+      aoMap: loader.load(materialConfig.ao),
+      normalMap: exrLoader.load(materialConfig.normal),
+      roughnessMap: exrLoader.load(materialConfig.roughness),
     };
 
-    // Assign the new material to the selected part
     this.selectedPart.material = new THREE.MeshStandardMaterial({
       ...textures,
-      metalness: 0.2, // Adjust to fit the material
-      roughness: 1.0, // Default; overridden by roughnessMap
+      metalness: 0.2,
+      roughness: 1.0,
     });
 
-    // Update the stored material reference
+    // Assign the material name for configuration retrieval
+    this.selectedPart.material.name = materialConfig.name;
+
     this.selectedPart.userData.originalMaterial = this.selectedPart.material;
   }
 
@@ -417,5 +430,27 @@ export class ShoeModel {
   // Remove highlight material and restore original
   removeHighlight(object) {
     object.material = object.userData.originalMaterial || object.material;
+  }
+
+  getShoeConfiguration() {
+    const configuration = {};
+
+    if (this.model) {
+      this.model.traverse((child) => {
+        if (child.isMesh) {
+          configuration[child.name] = {
+            color: child.material.color.getHexString(),
+            material: child.material.name || "none", // Retrieve material name
+          };
+        }
+      });
+    }
+
+    return configuration;
+  }
+
+  isOrderFinishOpen() {
+    const orderFinish = document.querySelector(".order-finish");
+    return orderFinish && orderFinish.style.right === "0vw";
   }
 }

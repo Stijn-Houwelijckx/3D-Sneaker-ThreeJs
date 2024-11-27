@@ -215,4 +215,14 @@ export class SceneManager {
       this.screenDimensions.height
     );
   }
+
+  getShoeConfiguration() {
+    const shoe = this.sceneSubjects.find(
+      (subject) => subject instanceof ShoeModel
+    );
+    if (shoe) {
+      return shoe.getShoeConfiguration();
+    }
+    return null; // Return null if ShoeModel is not found
+  }
 }

@@ -160,3 +160,134 @@ h2 {
   right: 16px;
   cursor: pointer;
 }
+
+.order-container {
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.order-container button {
+  padding: 16px 32px;
+  font-size: 1.5rem;
+  background: var(--primary-color);
+  color: black;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.order-finish {
+  position: absolute;
+  top: 0;
+  right: -25vw;
+
+  height: 100vh;
+  width: 25vw;
+  min-width: fit-content;
+
+  text-align: center;
+  display: none;
+
+  flex-direction: column;
+  gap: 16px;
+
+  background-color: white;
+  padding: 32px;
+  border-radius: 16px;
+}
+
+.order-finish h2 {
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.order-finish form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-finish form input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #000;
+}
+
+.order-finish .btn-container {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  width: 100%;
+}
+
+.order-finish .btn-container button {
+  margin-top: 32px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #000;
+  cursor: pointer;
+
+  width: 100%;
+}
+
+.order-finish .btn-container .finish-order-btn {
+  background-color: var(--primary-color);
+  color: black;
+}
+
+.order-finish .btn-container .cancel-order-btn {
+  background-color: #ff0000;
+  color: white;
+}
+
+/* Loader */
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 8px solid;
+  border-color: var(--primary-color) transparent var(--primary-color)
+    transparent;
+  animation: l1 1s infinite;
+}
+@keyframes l1 {
+  to {
+    transform: translate(-50%, -50%) rotate(0.5turn);
+  }
+}
+
+.loader-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+.order-success {
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: none;
+
+  color: var(--primary-color);
+
+  background-color: rgba(0, 0, 0, 0.8);
+
+  padding: 32px;
+  border-radius: 16px;
+}

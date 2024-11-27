@@ -56,6 +56,38 @@
       </div>
     </div>
 
+    <div class="order-container">
+      <!-- Create button to place the order -->
+      <button class="place-order-btn">Place Order</button>
+    </div>
+
+    <div class="order-finish">
+      <h2>Finish your order</h2>
+      <div class="order-info"></div>
+
+      <form class="order-form" action="#" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+
+        <div class="btn-container">
+          <button class="finish-order-btn">Finish Order</button>
+          <button class="cancel-order-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="loader-backdrop">
+      <div class="loader"></div>
+    </div>
+
+    <div class="order-success">
+      <h2>Order placed successfully!</h2>
+      <p>Thank you for your purchase</p>
+    </div>
+
     <script type="module" src="src/main.js"></script>
   </body>
 </html>
