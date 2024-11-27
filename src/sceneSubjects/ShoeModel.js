@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { gsap } from "gsap"; // Import GSAP for animations
+import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader"; // Import EXRLoader for EXR textures
 
 export class ShoeModel {
   constructor(
@@ -51,6 +52,21 @@ export class ShoeModel {
       metalness: 1, // Adjust as needed
       roughness: 0.3, // Adjust as needed
     });
+
+    this.materials = {
+      brown_leather_1k: {
+        diffuse: "/textures/brown_leather_1k/brown_leather_diffuse_1k.jpg",
+        ao: "/textures/brown_leather_1k/brown_leather_ao_1k.jpg",
+        normal: "/textures/brown_leather_1k/brown_leather_nor_gl_1k.exr",
+        roughness: "/textures/brown_leather_1k/brown_leather_rough_1k.exr",
+      },
+      denim_fabric_1k: {
+        diffuse: "/textures/denim_fabric_1k/denim_fabric_diffuse_1k.jpg",
+        ao: "/textures/denim_fabric_1k/denim_fabric_ao_1k.jpg",
+        normal: "/textures/denim_fabric_1k/denim_fabric_nor_gl_1k.exr",
+        roughness: "/textures/denim_fabric_1k/denim_fabric_rough_1k.exr",
+      },
+    };
 
     this.load(); // Load the model when the class is instantiated
     this.addShoeRotationInteraction(); // Add interaction logic to rotate the shoe
@@ -260,8 +276,57 @@ export class ShoeModel {
     }
   }
 
+  // Apply the selected material to the part
+  loadMaterial(materialName) {
+    if (!this.selectedPart) {
+      console.error("No part selected.");
+      return;
+    }
+
+    if (materialName === "none") {
+      // Create a simple material with no textures
+      this.applyColorToSelectedPart("#ffffff"); // Reset to white color
+
+      console.log(
+        "Textures removed, material reset to plain MeshStandardMaterial."
+      );
+      return;
+    }
+
+    // Check if the material exists in the configuration
+    if (!this.materials[materialName]) {
+      console.error("Invalid material name:", materialName);
+      return;
+    }
+
+    const loader = new THREE.TextureLoader(); // For JPG/PNG textures
+    const exrLoader = new EXRLoader(); // For EXR textures
+
+    const materialConfig = this.materials[materialName];
+
+    const textures = {
+      map: loader.load(materialConfig.diffuse), // Albedo/Base color
+      aoMap: loader.load(materialConfig.ao), // Ambient Occlusion
+      normalMap: exrLoader.load(materialConfig.normal), // Normal map
+      roughnessMap: exrLoader.load(materialConfig.roughness), // Roughness
+    };
+
+    // Assign the new material to the selected part
+    this.selectedPart.material = new THREE.MeshStandardMaterial({
+      ...textures,
+      metalness: 0.2, // Adjust to fit the material
+      roughness: 1.0, // Default; overridden by roughnessMap
+    });
+
+    // Update the stored material reference
+    this.selectedPart.userData.originalMaterial = this.selectedPart.material;
+  }
+
   // Set up the color picker and save button
   setupColorPicker() {
+    const colorPickerContainer = document.querySelector(
+      ".color-picker-container"
+    );
     const colorGrid = document.querySelector(".color-grid");
     const closeButton = document.querySelector(".fa-close"); // Select the close button
 
@@ -277,13 +342,43 @@ export class ShoeModel {
 
         console.log(selectedColor);
         this.applyColorToSelectedPart(`#${selectedColor}`); // Apply color with '#' prefix
-        this.hideColorPicker(); // Optionally hide the color picker
+        // this.hideColorPicker(); // Optionally hide the color picker
+      }
+    });
+
+    const materialGrid = document.querySelector(".material-grid");
+
+    materialGrid.addEventListener("click", (event) => {
+      const target = event.target;
+
+      // Check if the clicked element is a material div
+      if (target.classList.contains("material")) {
+        const selectedMaterial = target.getAttribute("data-material"); // Get material name
+        this.loadMaterial(selectedMaterial); // Apply the selected material
       }
     });
 
     // Event listener for the close button
     closeButton.addEventListener("click", () => {
       this.hideColorPicker();
+    });
+
+    // Add event listener for clicking outside the color picker
+    document.addEventListener("click", (event) => {
+      // Check if the click is outside the color picker container and its children
+
+      // Check if the color picker is visible (i.e., right is not -25vw)
+      const isColorPickerVisible = colorPickerContainer.style.right === "0vw";
+      if (
+        isColorPickerVisible &&
+        !this.intersectedObject &&
+        !colorPickerContainer.contains(event.target) &&
+        !event.target.closest(".color-picker-container") &&
+        !event.target.closest(".color-grid") &&
+        !event.target.closest(".material-grid")
+      ) {
+        this.hideColorPicker(); // Hide the color picker
+      }
     });
   }
 

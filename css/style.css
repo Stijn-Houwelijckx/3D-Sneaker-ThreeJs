@@ -123,46 +123,35 @@ canvas {
   background: #808080;
 }
 
-input[type="color" i] {
-  /* border-radius: 50%; */
-  inline-size: 200px;
-  block-size: 50px;
-  border: none;
+.material-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
 
-  position: relative;
-
+.material-grid .material {
+  width: 100px;
+  height: 50px;
+  border-radius: 16px;
   cursor: pointer;
+
+  border: solid 2px #000;
 }
 
-input[type="color" i]::after {
-  content: "Pick a color";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  color: #fff;
-  font-size: 1rem;
-  font-weight: bold;
+.material-grid .material[data-material="brown_leather_1k"] {
+  background-image: url("/textures/brown_leather_1k/brown_leather_diffuse_1k.jpg");
 }
 
-#color-picker-container input {
-  margin-bottom: 10px;
+.material-grid .material[data-material="denim_fabric_1k"] {
+  background-image: url("/textures//denim_fabric_1k//denim_fabric_diffuse_1k.jpg");
 }
 
 h2 {
   font-size: 2rem;
   text-transform: capitalize;
-}
-
-#save-color {
-  padding: 8px 16px;
-  background: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: margin-top 0.3s ease;
 }
 
 .fa-close {
