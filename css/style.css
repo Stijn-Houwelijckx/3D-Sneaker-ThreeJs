@@ -291,3 +291,15 @@ h2 {
   padding: 32px;
   border-radius: 16px;
 }
+
+.shoe-text {
+  display: none;
+}
+
+.color-picker-container .text-input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #000;
+
+  display: none;
+}

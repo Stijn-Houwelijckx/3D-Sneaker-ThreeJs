@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { gsap } from "gsap"; // Import GSAP for animations
 import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader"; // Import EXRLoader for EXR textures
+import * as dat from "dat.gui"; // Import dat.GUI for UI controls
 
 export class ShoeModel {
   constructor(
@@ -77,6 +78,56 @@ export class ShoeModel {
     this.setupColorPicker(); // Setup the color picker and save button
   }
 
+  createTextCanvas(
+    text,
+    font = "20px Arial",
+    color = "black",
+    bgColor = "white"
+  ) {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    // Set canvas size
+    canvas.width = 512;
+    canvas.height = 512;
+
+    // Flip the canvas vertically
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+
+    // Fill background color
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Rotate the canvas 90 degrees clockwise
+    ctx.translate(canvas.width / 2, canvas.height / 2); // Move origin to center
+    ctx.rotate((90 * Math.PI) / 180); // Rotate by 90 degrees
+    ctx.translate(-canvas.width / 2, -canvas.height / 2); // Move origin back
+
+    // Draw the text
+    ctx.font = "bold " + font;
+    ctx.fillStyle = color;
+    // ctx.textAlign = "center";
+    ctx.textBaseline = "center";
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+    return canvas;
+  }
+
+  createTextTexture(text) {
+    const canvas = this.createTextCanvas(text);
+    const texture = new THREE.CanvasTexture(canvas);
+
+    // Set initial offset values
+    texture.repeat.set(2, 2);
+    texture.offset.set(-1.25, -0.3);
+
+    // Store the texture for later updates
+    this.textTexture = texture;
+
+    return texture;
+  }
+
   load() {
     const loader = new GLTFLoader(); // Create a new loader instance
 
@@ -98,6 +149,20 @@ export class ShoeModel {
 
             child.castShadow = true; // Enable shadow casting
             child.receiveShadow = true; // Enable shadow receiving
+
+            if (child.name === "inside") {
+              // Add a custom texture to the part
+              const texture = this.createTextTexture("SWEAR");
+              child.material = new THREE.MeshStandardMaterial({
+                map: texture,
+              });
+
+              // Set the material name for configuration retrieval
+              child.material.name = "Custom Texture";
+
+              // Store the original material for later use
+              child.userData.originalMaterial = child.material;
+            }
 
             // Assign a default name if not present
             if (!child.name) {
@@ -253,6 +318,8 @@ export class ShoeModel {
       ".color-picker-container"
     );
     const partNameElement = colorPickerContainer.querySelector(".shoe-part");
+    const shoeText = document.querySelector(".shoe-text");
+    const inputText = document.querySelector(".text-input");
 
     // Update the part name dynamically
     if (this.selectedPart && this.selectedPart.name) {
@@ -279,15 +346,35 @@ export class ShoeModel {
 
     // Finally, make the container visible after the animation starts
     colorPickerContainer.style.display = "flex"; // Show the container
+
+    if (this.selectedPart.name === "inside") {
+      shoeText.style.display = "block";
+      inputText.style.display = "block";
+    } else {
+      shoeText.style.display = "none";
+      inputText.style.display = "none";
+    }
+  }
+
+  // Apply text to the selected part
+  applyTextToSelectedPart(text) {
+    if (this.selectedPart) {
+      const texture = this.createTextTexture(text);
+      this.selectedPart.material = new THREE.MeshStandardMaterial({
+        map: texture,
+      });
+
+      // Assign the material name for configuration retrieval
+      this.selectedPart.material.name = "Custom Text";
+
+      this.selectedPart.userData.originalMaterial = this.selectedPart.material;
+    }
   }
 
   // Apply the selected color to the part
   applyColorToSelectedPart(color) {
     if (this.selectedPart) {
-      this.selectedPart.material = new THREE.MeshStandardMaterial({
-        color: color,
-      });
-      this.selectedPart.userData.originalMaterial = this.selectedPart.material;
+      this.selectedPart.material.color.set(color);
     }
   }
 
@@ -299,7 +386,11 @@ export class ShoeModel {
 
     if (materialName === "none") {
       // Reset to a default material
-      this.applyColorToSelectedPart("#ffffff");
+      // this.applyColorToSelectedPart("#ffffff");
+      this.selectedPart.material = new THREE.MeshStandardMaterial({
+        color: "#ffffff",
+      });
+      this.selectedPart.userData.originalMaterial = this.selectedPart.material;
       this.selectedPart.material.name = "Plain Material"; // Set a default name
       console.log(
         "Textures removed, material reset to plain MeshStandardMaterial."
@@ -343,17 +434,24 @@ export class ShoeModel {
     const colorGrid = document.querySelector(".color-grid");
     const closeButton = document.querySelector(".fa-close"); // Select the close button
 
+    // Add event listener for the text input
+    const textInput = document.querySelector(".text-input");
+    textInput.addEventListener("input", (event) => {
+      const text = event.target.value;
+      this.applyTextToSelectedPart(text);
+    });
+
     // Add event listener for the color grid
     colorGrid.addEventListener("click", (event) => {
       const target = event.target;
 
-      console.log(target);
+      // console.log(target);
 
       // Check if the clicked element is a color div
       if (target.classList.contains("color")) {
         const selectedColor = target.getAttribute("data-color"); // Get the color from data-color
 
-        console.log(selectedColor);
+        // console.log(selectedColor);
         this.applyColorToSelectedPart(`#${selectedColor}`); // Apply color with '#' prefix
         // this.hideColorPicker(); // Optionally hide the color picker
       }
