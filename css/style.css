@@ -27,6 +27,18 @@ canvas {
   height: 100%; /* Make canvas fill the full height */
 }
 
+.logo {
+  position: absolute;
+  width: 200px;
+  top: 64px;
+  left: 64px;
+  cursor: pointer;
+}
+
+.logo img {
+  width: 100%;
+}
+
 .title-container {
   position: absolute;
   top: 16px;
@@ -89,38 +101,38 @@ canvas {
 .color-grid .color {
   width: 50px;
   height: 50px;
-  border-radius: 16px;
+  border-radius: 8px;
   cursor: pointer;
 
   border: solid 2px #000;
 }
 
-.color-grid .color[data-color="ff0000"] {
-  background: #ff0000;
+.color-grid .color[data-color="ba3939"] {
+  background: #ba3939;
 }
-.color-grid .color[data-color="0000ff"] {
-  background: #0000ff;
+.color-grid .color[data-color="dbb2a9"] {
+  background: #dbb2a9;
 }
 .color-grid .color[data-color="69ff47"] {
   background: #69ff47;
 }
-.color-grid .color[data-color="ffff00"] {
-  background: #ffff00;
+.color-grid .color[data-color="28a09a"] {
+  background: #28a09a;
 }
-.color-grid .color[data-color="800080"] {
-  background: #800080;
+.color-grid .color[data-color="5b487f"] {
+  background: #5b487f;
 }
-.color-grid .color[data-color="ffa500"] {
-  background: #ffa500;
+.color-grid .color[data-color="ff4100"] {
+  background: #ff4100;
 }
-.color-grid .color[data-color="000000"] {
-  background: #000000;
+.color-grid .color[data-color="121210"] {
+  background: #121210;
 }
-.color-grid .color[data-color="ffffff"] {
-  background: #ffffff;
+.color-grid .color[data-color="eff2ee"] {
+  background: #eff2ee;
 }
-.color-grid .color[data-color="808080"] {
-  background: #808080;
+.color-grid .color[data-color="e3336f"] {
+  background: #e3336f;
 }
 
 .material-grid {
@@ -135,7 +147,7 @@ canvas {
 .material-grid .material {
   width: 100px;
   height: 50px;
-  border-radius: 16px;
+  border-radius: 8px;
   cursor: pointer;
 
   border: solid 2px #000;
@@ -192,6 +204,7 @@ h2 {
   display: none;
 
   flex-direction: column;
+  justify-content: center;
   gap: 16px;
 
   background-color: white;
@@ -208,12 +221,42 @@ h2 {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  justify-content: space-between;
+  height: 50%;
 }
 
-.order-finish form input {
+.order-finish form .order-form-fields-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-finish form .order-form-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.order-finish .order-form-container .order-form-field {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 8px;
+
+  width: 100%;
+}
+
+.order-finish .order-form-field input {
   padding: 8px;
   border-radius: 8px;
   border: 1px solid #000;
+  width: 100%;
+}
+
+.order-finish .order-form-field label {
+  font-size: 1rem;
 }
 
 .order-finish .btn-container {
@@ -225,12 +268,16 @@ h2 {
 
 .order-finish .btn-container button {
   margin-top: 32px;
-  padding: 8px;
+  padding: 12px 8px;
   border-radius: 8px;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
+  border: none;
   cursor: pointer;
 
   width: 100%;
+
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .order-finish .btn-container .finish-order-btn {
