@@ -59,7 +59,7 @@ cancelOrderBtn.addEventListener("click", (e) => {
   });
 });
 
-const primus = Primus.connect("http://localhost:3000", {
+const primus = Primus.connect("https://threed-sneaker-nodejs.onrender.com", {
   reconnect: {
     max: Infinity,
     min: 500,
