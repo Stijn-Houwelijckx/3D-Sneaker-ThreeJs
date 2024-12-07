@@ -59,6 +59,14 @@ cancelOrderBtn.addEventListener("click", (e) => {
   });
 });
 
+const primus = Primus.connect("http://localhost:3000", {
+  reconnect: {
+    max: Infinity,
+    min: 500,
+    retries: 10,
+  },
+});
+
 // Event listener for form submission
 orderForm.addEventListener("submit", async (e) => {
   const formData = new FormData(orderForm);
@@ -118,6 +126,13 @@ orderForm.addEventListener("submit", async (e) => {
 
     if (response.ok) {
       const responseData = await response.json();
+
+      if (responseData) {
+        primus.write({
+          action: "newOrder",
+          data: responseData,
+        });
+      }
       console.log("Order submitted successfully:", responseData);
 
       // Show success message and reset the form
