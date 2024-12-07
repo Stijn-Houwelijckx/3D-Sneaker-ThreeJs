@@ -41,9 +41,6 @@ placeOrderButton.addEventListener("click", () => {
     right: "0vw", // Set the width to 33.33%
     ease: "power2.out", // Easing function for smooth animation
   });
-
-  const configuration = sceneManager.getShoeConfiguration();
-  console.log("Shoe Configuration:", configuration);
 });
 
 // Add event listener for the "Cancel Order" button
@@ -63,38 +60,96 @@ cancelOrderBtn.addEventListener("click", (e) => {
 });
 
 // Event listener for form submission
-orderForm.addEventListener("submit", (e) => {
+orderForm.addEventListener("submit", async (e) => {
+  const formData = new FormData(orderForm);
+
+  const name = formData.get("name");
+  const email = formData.get("email");
+  const street = formData.get("street");
+  const houseNr = formData.get("houseNr");
+  const zipcode = formData.get("zipcode");
+  const city = formData.get("city");
+
+  const configuration = sceneManager.getShoeConfiguration();
+
+  // Build the sneaker parts array based on your shoe configuration
+  const sneakerParts = Object.entries(configuration).map(
+    ([partName, details]) => ({
+      partName: partName.replace("_", " "), // Format part names if necessary
+      color: details.color,
+      material: details.material,
+    })
+  );
+
+  const orderPayload = {
+    order: {
+      user: {
+        name: name,
+        email: email,
+        address: {
+          street: street,
+          houseNr: houseNr,
+          zipcode: zipcode,
+          city: city,
+        },
+      },
+      sneaker: {
+        parts: sneakerParts,
+      },
+    },
+  };
+
+  console.log("Order Payload:", orderPayload);
+
   e.preventDefault();
 
-  // close the order finish message
-  gsap.to(orderFinish, {
-    duration: 0.5, // Animation duration in seconds
-    right: "-25vw", // Set the width to 0% to collapse it
-    ease: "power2.in", // Easing function for smooth closing
-    onComplete: () => {
-      // After the animation is complete, hide the container
-      orderFinish.style.display = "none"; // Hide the container
-      placeOrderButton.style.display = "block";
+  try {
+    // Send the POST request
+    const response = await fetch(
+      "https://threed-sneaker-nodejs.onrender.com/api/v1/orders",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderPayload),
+      }
+    );
 
-      // Show the loader backdrop
-      loaderBackdrop.style.display = "block";
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log("Order submitted successfully:", responseData);
 
-      // Simulate a delay for the loader
-      setTimeout(() => {
-        // Hide the loader backdrop after 2 seconds
-        loaderBackdrop.style.display = "none";
+      // Show success message and reset the form
+      gsap.to(orderFinish, {
+        duration: 0.5,
+        right: "-25vw",
+        ease: "power2.in",
+        onComplete: () => {
+          orderFinish.style.display = "none";
+          placeOrderButton.style.display = "block";
+          loaderBackdrop.style.display = "block";
 
-        // Show a success message
-        succesMessage.style.display = "block";
-      }, 2000);
+          setTimeout(() => {
+            loaderBackdrop.style.display = "none";
+            succesMessage.style.display = "block";
+          }, 2000);
 
-      // Reset the form
-      orderForm.reset();
+          orderForm.reset();
 
-      // Close the success message after 5 seconds
-      setTimeout(() => {
-        succesMessage.style.display = "none";
-      }, 5000);
-    },
-  });
+          setTimeout(() => {
+            succesMessage.style.display = "none";
+          }, 5000);
+        },
+      });
+    } else {
+      console.error("Error submitting order:", await response.text());
+      alert("There was an error processing your order. Please try again.");
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+    alert(
+      "Network error. Please check your internet connection and try again."
+    );
+  }
 });
