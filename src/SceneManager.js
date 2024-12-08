@@ -34,22 +34,6 @@ export class SceneManager {
     // Add OrbitControls
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enabled = false;
-    // this.controls.enableDamping = true; // Smooth movement
-    // this.controls.dampingFactor = 0.25; // Damping factor for smoothness
-    // this.controls.screenSpacePanning = false; // Disable screen space panning
-    // this.controls.enableZoom = false; // Disable zooming
-    // this.controls.enablePan = false; // Disable panning
-
-    // // Restrict horizontal rotation (azimuth angle)
-    // this.controls.minAzimuthAngle = -Math.PI / 4; // Limit to -45 degrees
-    // this.controls.maxAzimuthAngle = Math.PI / 4; // Limit to +45 degrees
-
-    // // Restrict vertical rotation (polar angle)
-    // this.controls.minPolarAngle = Math.PI / 4; // Limit to +45 degrees above horizon
-    // this.controls.maxPolarAngle = Math.PI / 2; // Limit to +90 degrees (no looking below)
-
-    // this.controls.target.set(0, 0, 0); // Target the center of the scene
-    // this.controls.update(); // Initial update
 
     // Set an initial camera position for better view
 

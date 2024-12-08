@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { gsap } from "gsap"; // Import GSAP for animations
 import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader"; // Import EXRLoader for EXR textures
-import * as dat from "dat.gui"; // Import dat.GUI for UI controls
 
 export class ShoeModel {
   constructor(
@@ -39,11 +38,6 @@ export class ShoeModel {
     ]);
 
     this.environmentTexture.flipY = true;
-
-    // this.highlightMaterial = new THREE.MeshStandardMaterial({
-    //   color: 0xff0000, // Red color to highlight
-    //   wireframe: true, // Optional: make it wireframe for better highlighting
-    // });
 
     this.highlightMaterial = new THREE.MeshStandardMaterial({
       // Add the environment texture to the material

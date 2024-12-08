@@ -30,8 +30,5 @@ export class Atmosphere {
   }
 
   // Optional: Update method for animations (e.g., rotating the atmosphere)
-  update() {
-    // You can rotate the cube slightly if desired
-    // this.cube.rotation.y += 0.001;  // Uncomment to rotate the atmosphere
-  }
+  update() {}
 }

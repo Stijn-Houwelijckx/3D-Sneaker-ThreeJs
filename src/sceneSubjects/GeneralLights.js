@@ -49,8 +49,5 @@ export class GeneralLights {
   }
 
   // Update light intensity and color based on time
-  update(time) {
-    // this.light.intensity = (Math.sin(time) + 1.5) / 1.5; // Pulsing light effect
-    // this.light.color.setHSL(Math.sin(time), 0.5, 0.5); // Changing light color over time
-  }
+  update(time) {}
 }
