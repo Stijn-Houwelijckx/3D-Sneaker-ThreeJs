@@ -150,7 +150,7 @@ export class ShoeModel {
             child.castShadow = true; // Enable shadow casting
             child.receiveShadow = true; // Enable shadow receiving
 
-            if (child.name === "inside") {
+            if (child.name === "Inside") {
               // Add a custom texture to the part
               const texture = this.createTextTexture("SWEAR");
               child.material = new THREE.MeshStandardMaterial({
@@ -158,7 +158,7 @@ export class ShoeModel {
               });
 
               // Set the material name for configuration retrieval
-              child.material.name = "Custom Texture";
+              child.material.name = "Text texture";
 
               // Store the original material for later use
               child.userData.originalMaterial = child.material;
@@ -352,7 +352,7 @@ export class ShoeModel {
     // Finally, make the container visible after the animation starts
     colorPickerContainer.style.display = "flex"; // Show the container
 
-    if (this.selectedPart.name === "inside") {
+    if (this.selectedPart.name === "Inside") {
       shoeText.style.display = "block";
       inputText.style.display = "block";
     } else {
@@ -370,7 +370,7 @@ export class ShoeModel {
       });
 
       // Assign the material name for configuration retrieval
-      this.selectedPart.material.name = "Custom Text";
+      this.selectedPart.material.name = "Text texture";
 
       this.selectedPart.userData.originalMaterial = this.selectedPart.material;
     }
