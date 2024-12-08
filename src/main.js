@@ -26,6 +26,7 @@ const finishOrderBtn = document.querySelector(".finish-order-btn");
 const cancelOrderBtn = document.querySelector(".cancel-order-btn");
 const orderForm = document.querySelector(".order-form");
 const loaderBackdrop = document.querySelector(".loader-backdrop");
+const loader = document.querySelector(".loader");
 const succesMessage = document.querySelector(".order-success");
 
 // Add event listener for the button
@@ -142,11 +143,12 @@ orderForm.addEventListener("submit", async (e) => {
         ease: "power2.in",
         onComplete: () => {
           orderFinish.style.display = "none";
-          placeOrderButton.style.display = "block";
+          // placeOrderButton.style.display = "block";
           loaderBackdrop.style.display = "block";
 
           setTimeout(() => {
-            loaderBackdrop.style.display = "none";
+            // loaderBackdrop.style.display = "block";
+            loader.style.display = "none";
             succesMessage.style.display = "block";
           }, 2000);
 
@@ -154,6 +156,8 @@ orderForm.addEventListener("submit", async (e) => {
 
           setTimeout(() => {
             succesMessage.style.display = "none";
+            // navigate to google.com
+            window.location.href = "https://www.swear-london.com/";
           }, 5000);
         },
       });
