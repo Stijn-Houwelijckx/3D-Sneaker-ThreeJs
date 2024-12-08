@@ -11,7 +11,7 @@ export class GeneralLights {
 
     // Create a PointLight with initial color and intensity
     this.light = new THREE.PointLight("white", 100);
-    this.light.position.set(0, 5, 0); // Set the position of the light
+    this.light.position.set(-3, 5, 3); // Set the position of the light
 
     // Enable shadow casting for the light
     // this.light.castShadow = true; // Enable shadow casting for the light
