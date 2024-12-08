@@ -293,6 +293,9 @@ export class ShoeModel {
       if (intersects.length > 0) {
         const intersectedObject = intersects[0].object;
 
+        // Set cursor style to pointer if an object is intersected
+        this.domElement.style.cursor = "pointer";
+
         // Highlight the intersected part
         if (this.intersectedObject !== intersectedObject) {
           if (this.intersectedObject) {
@@ -303,6 +306,8 @@ export class ShoeModel {
           this.addHighlight(this.intersectedObject);
         }
       } else {
+        // Reset cursor style if no object is intersected
+        this.domElement.style.cursor = "auto";
         // Remove highlight if no object is intersected
         if (this.intersectedObject) {
           this.removeHighlight(this.intersectedObject);
